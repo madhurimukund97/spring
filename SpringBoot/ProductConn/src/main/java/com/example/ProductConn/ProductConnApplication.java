@@ -9,5 +9,4 @@ public class ProductConnApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ProductConnApplication.class, args);
 	}
-
 }

@@ -5,29 +5,30 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 @Entity
 public class Product {
-	private int id;
-	private String fname;
+	private Long id;
+	private String name;
 	private String brand;
 	private String madein;
 	private float price;
 	protected Product() {
-		super();
-		// TODO Auto-generated constructor stub
+//		super();
+//		// TODO Auto-generated constructor stub
 	}
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 	
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getFname() {
-		return fname;
+	
+	public String getName() {
+		return name;
 	}
-	public void setFname(String fname) {
-		this.fname = fname;
+	public void setName(String name) {
+		this.name = name;
 	}
 	public String getBrand() {
 		return brand;

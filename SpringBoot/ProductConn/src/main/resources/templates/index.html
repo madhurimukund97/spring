@@ -7,7 +7,10 @@
 <body>
 	<div align = "center">
 		<h1> Product Manager</h1>
-		<table border="1" cellpadding ="10">
+		<a href="new">New Product</a>
+		<br/>
+		<br/>
+		<table border = "1" cellpadding ="10">
 			<thead>
 				<tr>
 					<th>Product ID</th>
@@ -15,15 +18,24 @@
 					<th>Brand</th>
 					<th>made in</th>
 					<th>Price</th>
+					<th>Edit Product</th>
+					<th>Delete Product</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr th:each="product : ${li}">
-					<td th:text="${product.id}">product id</td>
-					<td th:text="${product.fname}">product name</td>
+					<td th:text="${product.id}">Product Id</td>
+					<td th:text="${product.name}">Name</td>
 					<td th:text="${product.brand}">Brand</td>
 					<td th:text="${product.madein}">made in</td>
 					<td th:text="${product.price}">price</td>
+					<td>
+						<a th:href="@{'edit/' + ${product.id}}">Edit</a>
+					</td>
+					<td>
+						<a th:href="@{'delete/' + ${product.id}}">Delete</a>
+					</td>
+					
 				</tr>
 			</tbody>
 		</table>
