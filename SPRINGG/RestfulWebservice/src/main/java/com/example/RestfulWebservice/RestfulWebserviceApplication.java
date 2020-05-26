@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
-
+// building an application that uses Spring’s RestTemplate to retrieve a random Spring Boot quotation at https://gturnquist-quoters.cfapps.io/api/random.
 @SpringBootApplication
 public class RestfulWebserviceApplication {
 

@@ -5,17 +5,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
+@Entity // It is a JPA entity.
 public class Customer {
 
-  @Id
+  @Id // id property is also annotated with @GeneratedValueto generate automatically.
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Long id;
   private String firstName;
   private String lastName;
-
+  //do not use it directly, 
   protected Customer() {}
-
+  // to store the data.
   public Customer(String firstName, String lastName) {
     this.firstName = firstName;
     this.lastName = lastName;
