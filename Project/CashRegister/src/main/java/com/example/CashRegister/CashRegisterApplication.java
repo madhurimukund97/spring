@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -13,6 +15,10 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class CashRegisterApplication {
+	@Inject
+    RegisterFields reg;
+	@Inject
+	Bill b;
 	private static final Logger log = LoggerFactory.getLogger(CashRegisterApplication.class);
 	private static final OFFER_TYPE DISCOUNT_AMOUNT = null;
 	public static void main(String[] args) {
@@ -22,25 +28,25 @@ public class CashRegisterApplication {
 	@Bean
 	  public CommandLineRunner demo(Register repository) {
 	    return (args) -> {
-	    	
-	    Bill b = new Bill();
+	    
+	    
 	    // ......... addItem() adding single item....
 	    log.info("ADD ITEM() METHOD............");
-		repository.addItem("apple", 100);
+		repository.addItem("apple", 120);
 		repository.addItem("orange", 200);
 		repository.addItem("yellow", 300);
 		repository.addItem("mango", 400);
-		for (Entry<String, Double> entry : repository.items.entrySet()) {
+		for (Entry<String, Double> entry : reg.getItems().entrySet()) {
 		    log.info(entry.getKey() + ":" + entry.getValue().toString());
 		} 
 		log.info(" ");
 		log.info(" ");
 		//addItems(multiple items adding through map......
 		log.info("ADD ITEMS METHOD............");
-		repository.multiple_items.put("potato",200.0);
-		repository.multiple_items.put("capsicum",300.0);
-		repository.addItems(repository.multiple_items);
-		for (Entry<String, Double> entry : repository.items.entrySet()) {
+		reg.multiple_items.put("potato",200.0);
+		reg.multiple_items.put("capsicum",300.0);
+		repository.addItems(reg.multiple_items);
+		for (Entry<String, Double> entry : reg.getItems().entrySet()) {
 		    log.info(entry.getKey() + ":" + entry.getValue().toString());
 		} 
 		
@@ -49,10 +55,23 @@ public class CashRegisterApplication {
 		
 		//add offer....
 		log.info("ADD OFFER METHOD......");
-		repository.addOffer("apple", DISCOUNT_AMOUNT, 2, 200);
-		for (Entry<String, Map<OFFER_TYPE, Price>> entry : repository.offer.entrySet()) {
+		repository.addOffer("apple", OFFER_TYPE.DISCOUNT_AMOUNT, 3, 300);
+		repository.addOffer("apple", OFFER_TYPE.DISCOUNT_PERCENT, 2, 210);
+		repository.addOffer("orange", OFFER_TYPE.DISCOUNT_AMOUNT, 3, 200);
+		for (Entry<String, Map<OFFER_TYPE, Price>> entry : reg.offer.entrySet()) {
 		    log.info(entry.getKey());
-		    
+//		    System.out.println(entry.getValue().size());
+		    for( OFFER_TYPE cur:entry.getValue().keySet()) {
+		    	if(cur==null) {
+		    		
+		    	}
+//		    		System.out.println("null");
+		    	else {
+//		    		System.out.println(entry.getValue().get(cur).getQuantity());
+		    		log.info(cur.toString());
+		    		log.info(String.valueOf(entry.getValue().get(cur).getQuantity()));
+		    		}
+		    }  
 		} 
 		log.info(" ");
 		log.info(" ");
@@ -66,8 +85,8 @@ public class CashRegisterApplication {
 		//Finish Checkout....
 		log.info("FINISH CHECKOUT......");
 		Bill bill = repository.finishCheckout();
-//		b.getItemsPurchased();
-//		b.getTotalPrice();
+		b.getItemsPurchased();
+		b.getTotalPrice();
 		log.info(" ");
 		log.info(" ");
 		
@@ -79,7 +98,7 @@ public class CashRegisterApplication {
 		
 		//SCAN ITEM
 		log.info("SCAN ITEM......");
-		double val = repository.scanItem("apple");
+		double val = repository.scanItem("capsicum");
 		String s=String.valueOf(val);  
 		log.info(s);
 		log.info(" ");
@@ -87,26 +106,32 @@ public class CashRegisterApplication {
 		
 		
 		//GET INSTANCE
-//		log.info("GET INSTANCE......");
-//		repository.getInstance();
-//		log.info(" ");
-//		log.info(" ");
+		log.info("GET INSTANCE......");
+		repository.getInstance();
+		log.info(" ");
+		log.info(" ");
 		
 		
 		// BILL CLASS 
 		
 		//getItems
 		log.info("get items and their corresponding discount amount");
-		b.getItems();
+		ArrayList<Items> a = new ArrayList<>();
+		a.add(new Items("apple",8));
+		b.setItemsPurchased(a);
+		for (Entry<String, Double> entry : b.getItems().entrySet()) {
+		    log.info(entry.getKey() + ":" + entry.getValue().toString());
+		} 
+//		b.getItems();
 		log.info(" ");
 		log.info(" ");
 		
 		//getTotalCost method
-		log.info("GET TOTALCOST METHOD......");
+		log.info(b.getTotalPrice()+"GET TOTALCOST METHOD......");
 		b.getTotalPrice();
 		log.info(" ");
 		log.info(" ");
 		
 	    };
-	  }
+	 }
 }

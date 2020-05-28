@@ -7,19 +7,20 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.springframework.stereotype.Component;
+@Component
 public class Bill {
-	
 	@Inject
-	public Register register;
-	public double totalPrice;
+	public RegisterFields register;
+	public static double totalPrice;
 	ArrayList<Items>  itemsPurchased = new ArrayList<Items>();
 	Bill() {
 		
 	}
-	public Register getRegister() {
+	public RegisterFields getRegister() {
 		return register;
 	}
-	public void setRegister(Register register) {
+	public void setRegister(RegisterFields register) {
 		this.register = register;
 	}
 	public ArrayList<Items> getItemsPurchased() {
@@ -37,33 +38,33 @@ public class Bill {
 	public void setTotalPrice(double totalPrice) {
 		this.totalPrice = totalPrice;
 	}
-	Bill(ArrayList l) {
-		
+	Bill(ArrayList l, double totalPrice) {
+		this.totalPrice = totalPrice;
 		itemsPurchased=l;
 	}
+	
 	
 	Map<String,Double> purchaseItemsPrice = new HashMap<String,Double>();
 	
 	public Map<String, Double> getItems() {
 		for(int i=0;i<itemsPurchased.size();i++) {
 			Items currentItem = itemsPurchased.get(i);
+//			System.out.println(currentItem.getName()+" "+currentItem.getQuantity());
 			Map<String, Map<OFFER_TYPE, Price>> offer = register.getOffer();
 			Map<String,Double> items=register.getItems();
 			Map<OFFER_TYPE, Price> discounts = offer.get(currentItem.getName());
+//			System.out.println(discounts.size()+"hjjshfjsk");
 			//add a method to calculate the price, returns price
-			double costOfGood=getCost(currentItem.getQuantity(),offer,items);
+			double costOfGood=getCost(currentItem,discounts,items);
 			purchaseItemsPrice.put(currentItem.getName(),costOfGood);
 		}
 		return purchaseItemsPrice;
 	}
-	public double getCost(int quantity,Map<String, Map<OFFER_TYPE, Price>> offer,Map<String, Double> items) {
+	public double getCost(Items cur, Map<OFFER_TYPE, Price> discount,Map<String, Double> items) {
 		// TODO Auto-generated method stub
-		Map<String,Integer> purchased=new HashMap<>();
 		double total=0;
-		for(String curItem:purchased.keySet()) {
-			Map<OFFER_TYPE,Price> discount=offer.get(curItem);
 			if(discount==null) {
-				total+=purchased.get(curItem)*items.get(curItem);
+				total+=cur.getQuantity()*items.get(cur.getName());
 			}else {
 				ArrayList<Price> a=new ArrayList<>();
 				a.sort(new Comparator<Price>() {
@@ -73,18 +74,19 @@ public class Bill {
 				for(OFFER_TYPE offerType:discount.keySet()) {
 					a.add(discount.get(offerType));
 				}
-				total+=getCost2(items,purchased,a,purchased.get(curItem));
+				total+=getCost2(items,cur,a);
 			}
-		}
 		return total;
 	}
-	public int getCost2(Map<String, Double> priceForEach2, Map<String, Integer> purchased2, ArrayList<Price> a, int totalGoods) {
-		int total=0;
+	public double getCost2(Map<String, Double> priceForEach2,Items cur, ArrayList<Price> a) {
+		int totalGood=cur.getQuantity();
+		double total=0;
 		for(Price p:a) {
-			if(totalGoods==0)
+//			System.out.println("sfsf");
+			if(totalGood==0)
 				break;
-			total+=p.getCost()*(totalGoods/p.getQuantity());
-			totalGoods=totalGoods%p.getQuantity();
+			total+=p.getCost()*(totalGood/p.getQuantity());
+			totalGood=totalGood%p.getQuantity();
 		}
 		return total;
 	}
@@ -94,6 +96,5 @@ public class Bill {
 			totalPrice+=price;
 		}
 		return totalPrice;
-	}
-	
+	}	
 }
